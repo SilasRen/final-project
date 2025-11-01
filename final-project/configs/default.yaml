@@ -1,0 +1,22 @@
+﻿seed: 42
+data:
+  be_path: "data/processed/berkeley_1x1_monthly.csv"  # 先用demo生成
+  date_col: Date
+  target_col: TempAnomaly
+features:
+  ma_window_months: 360
+model:
+  type: sarimax_lstm        # sarimax | lstm | sarimax_lstm
+  sarimax:
+    order: [1,1,1]
+    seasonal_order: [1,1,1,12]
+  lstm:
+    seq_len: 24
+    hidden_size: 64
+    num_layers: 1
+    lr: 0.001
+    epochs: 5
+    batch_size: 64
+paths:
+  fig_dir: outputs/figures
+  model_dir: outputs/models
