@@ -1,22 +1,31 @@
 ﻿seed: 42
 data:
-  be_path: "data/processed/berkeley_1x1_monthly.csv"  # 先用demo生成
+  be_path: "data/processed/berkeley_1x1_monthly.csv"  # Processed data path (will be generated if not exists)
   date_col: Date
   target_col: TempAnomaly
+noaa:
+  enabled: true
+  raw_path: "data/raw/noaa_gsom.csv"
+  processed_path: "data/processed/noaa_gsom_monthly.csv"
+  dataset: GSOM        # GSOM (monthly), GSOY (yearly), or DAILY
+  start_date: "1980-01-01"
+  end_date: null       # null uses current date
+  datatype: TAVG       # TAVG | TMAX | TMIN | PRCP ...
+  token_env_var: NOAA_TOKEN
 features:
-  ma_window_months: 360
+  ma_window_months: 360  # Moving average window in months (30 years)
 model:
-  type: sarimax_lstm        # sarimax | lstm | sarimax_lstm
+  type: sarimax_lstm        # Model type: sarimax | lstm | sarimax_lstm
   sarimax:
-    order: [1,1,1]
-    seasonal_order: [1,1,1,12]
+    order: [1,1,1]  # ARIMA order (p, d, q)
+    seasonal_order: [1,1,1,12]  # Seasonal order (P, D, Q, s) where s=12 for monthly data
   lstm:
-    seq_len: 24
-    hidden_size: 64
-    num_layers: 1
-    lr: 0.001
-    epochs: 5
-    batch_size: 64
+    seq_len: 24  # Input sequence length (months)
+    hidden_size: 64  # LSTM hidden layer size
+    num_layers: 1  # Number of LSTM layers
+    lr: 0.001  # Learning rate
+    epochs: 5  # Training epochs
+    batch_size: 64  # Batch size
 paths:
-  fig_dir: outputs/figures
-  model_dir: outputs/models
+  fig_dir: outputs/figures  # Directory for output figures
+  model_dir: outputs/models  # Directory for saved models

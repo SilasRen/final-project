@@ -11,3 +11,4 @@ dependencies:
   - jupyter
   - pyyaml
   - tqdm
+  - requests
