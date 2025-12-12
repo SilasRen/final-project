@@ -7,7 +7,7 @@ This guide explains how to run the project and download real data from Berkeley 
 1. **Install Conda** (if not already installed)
 2. **Create the environment**:
 ```bash
-conda env create -f environment.yml
+conda env create -f environment.yaml
 conda activate climate
 ```
 

@@ -12,3 +12,4 @@ dependencies:
   - pyyaml
   - tqdm
   - requests
+  - pillow
