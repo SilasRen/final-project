@@ -1,140 +1,129 @@
-﻿# AI for Global Warming Modeling & Short-Term Extremes
+﻿# AI for Climate Trend Modeling and Short-Term Extreme Events
 
-A machine learning project for climate prediction using time series models.
+A machine learning project that integrates long-term global warming trend analysis
+with short-term extreme climate event detection, aiming to support decision-oriented
+climate risk assessment under uncertainty.
+
+---
 
 ## Project Overview
 
-- **Long-term prediction**: Berkeley Earth temperature anomalies using SARIMAX + LSTM
-- **Short-term prediction**: NOAA/NEXRAD extreme events (extensible with ConvLSTM/GNN)
+This project implements a unified climate analytics pipeline with three components:
+
+- Long-term climate modeling  
+  Global temperature anomaly forecasting using Berkeley Earth data with
+  SARIMAX, LSTM, and a hybrid SARIMAX+LSTM model.
+
+- Short-term extreme event detection  
+  Time-aligned binary classification of extreme climate events using
+  spatiotemporal sequence modeling and rolling time-series cross-validation.
+
+- Scenario-based risk analysis  
+  Controlled warming perturbations (+1.5°C, +2.0°C) to evaluate changes in
+  extreme-event probabilities with uncertainty quantification.
+
+---
 
 ## Features
 
-- Automatic data download from Berkeley Earth and NOAA
-- Multiple model types: SARIMAX, LSTM, and hybrid SARIMAX+LSTM
-- Comprehensive evaluation metrics and visualization
-- Configurable via YAML configuration files
+- Long-term temperature anomaly modeling with statistical and neural approaches
+- Short-term extreme-event detection formulated as an event-alignment task
+- Rolling time-series cross-validation to prevent information leakage
+- Scenario simulation under alternative warming assumptions
+- Bootstrap-based confidence intervals for scenario risk estimates
+- Reproducible pipeline configured via YAML files
+
+---
 
 ## Installation
 
-### Windows Users
+Create and activate the conda environment:
 
-See [SETUP_WINDOWS.md](SETUP_WINDOWS.md) for detailed Windows setup instructions.
-
-Quick start:
-1. Install Anaconda/Miniconda
-2. Open Anaconda Prompt
-3. Navigate to project directory
-4. Run: `conda env create -f environment.yml`
-5. Run: `conda activate climate`
-6. Double-click `run.bat` or follow manual steps
-
-### Linux/Mac Users
-
-1. Create conda environment:
 ```bash
 conda env create -f environment.yaml
 conda activate climate
-```
 
-2. Prepare data (downloads real data from Berkeley Earth):
-```bash
-make data
-# or
-python -m src.prepare_data --config configs/default.yaml --use-real-data
-```
+Usage
+Data Preparation
+python -m src.prepare_data --config configs/default.yaml
 
-**Important**: The script will automatically download real data from Berkeley Earth (and NOAA GSOM if `NOAA_TOKEN` is set). 
-For detailed instructions on using real data, see [RUN_GUIDE.md](RUN_GUIDE.md).
-
-**NOAA Token**: To enable NOAA GSOM downloads you **must** set the `NOAA_TOKEN` environment variable with your NOAA CDO API token:
-```bash
-# Windows (Command Prompt)
-setx NOAA_TOKEN "your_token_here"
-
-# macOS/Linux
-export NOAA_TOKEN="your_token_here"
-```
-Request a token from https://www.ncei.noaa.gov/cdo-web/token.
-
-## Usage
-
-### Training
-
-Train models with default configuration:
-```bash
-make train
-# or
+Long-Term Model Training
 python -m src.train --config configs/default.yaml
-```
 
-### Evaluation
+Extreme Event Cross-Validation
+python -m src.train_with_cv
 
-Evaluate trained models:
-```bash
-make evaluate
-# or
+Evaluation
 python -m src.evaluate --config configs/default.yaml
-```
 
-### Complete Pipeline
+Scenario Simulation
+python -m src.scenario_simulation
 
-Run data preparation, training, and evaluation:
-```bash
-make all
-```
-
-## Project Structure
-
-```
+Project Structure
 final-project/
 ├── configs/
-│   └── default.yaml          # Configuration file
+│   └── default.yaml
 ├── data/
-│   ├── raw/                  # Raw data from Berkeley Earth/NOAA
-│   └── processed/            # Processed data for training
+│   ├── raw/
+│   └── processed/
 ├── outputs/
-│   ├── figures/              # Generated plots and visualizations
-│   └── models/               # Trained model files
+│   ├── figures/
+│   ├── models/
+│   └── results/
 ├── src/
-│   ├── data.py               # Data loading and processing
-│   ├── features.py           # Feature engineering
-│   ├── train.py              # Training script
-│   ├── evaluate.py           # Evaluation script
-│   ├── prepare_data.py       # Data preparation script
+│   ├── data.py
+│   ├── features.py
+│   ├── train.py
+│   ├── train_with_cv.py
+│   ├── evaluate.py
+│   ├── extreme_events.py
+│   ├── extreme_events_radar.py
+│   ├── scenario_simulation.py
+│   ├── plot_scenarios.py
 │   └── models/
-│       ├── sarimax_model.py  # SARIMAX model implementation
-│       └── lstm_model.py     # LSTM model implementation
+│       ├── sarimax_model.py
+│       └── lstm_model.py
 └── README.md
-```
 
-## Configuration
+Model Types
 
-Edit `configs/default.yaml` to customize:
-- Data paths and sources
-- Model hyperparameters
-- Training settings
-- Output directories
+SARIMAX
+Statistical time-series model capturing linear dynamics and seasonality.
 
-## Model Types
+LSTM
+Neural sequence model for nonlinear temporal dependencies.
 
-1. **SARIMAX**: Statistical time series model with seasonal components
-2. **LSTM**: Deep learning model for sequence prediction
-3. **SARIMAX+LSTM**: Hybrid model combining both approaches (40% SARIMAX + 60% LSTM)
+Hybrid SARIMAX + LSTM
+Convex combination of statistical and neural forecasts.
 
-## Data Sources
+Extreme Event Classifier
+Binary event detection model evaluated via time-aligned predictions rather
+than pointwise regression accuracy.
 
-- **Berkeley Earth**: Global temperature anomaly data
-  - Automatically downloads from official URLs
-  - Falls back to synthetic data if download fails
-- **NOAA**: Climate data for extreme events (future extension)
+Data Sources
 
-## Outputs
+Berkeley Earth
+Global monthly temperature anomaly data for long-term climate trend analysis.
 
-After training and evaluation, you'll find:
-- Model files in `outputs/models/`
-- Forecast plots in `outputs/figures/`
-- Evaluation metrics and visualizations
+Synthetic spatiotemporal sequences
+Used to emulate radar-like extreme climate event patterns for short-term
+detection and scenario evaluation.
 
-## License
+Outputs
 
-This project is for educational and research purposes.
+After running the pipeline, the project generates:
+
+Forecast and diagnostic figures in outputs/figures/
+
+Trained model files in outputs/models/
+
+Cross-validation metrics in outputs/results/
+
+Scenario-based extreme-event probability estimates with confidence intervals
+
+Notes
+
+This project emphasizes interpretability, temporal consistency, and decision relevance
+rather than precise long-horizon climate prediction. The framework is extensible and can
+incorporate higher-resolution observations, alternative extreme-event definitions, and
+more complex climate scenarios.

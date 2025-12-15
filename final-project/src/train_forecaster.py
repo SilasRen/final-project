@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
-from models.extreme_event_forecaster import ExtremeEventForecaster
+from src.models.extreme_event_forecaster import ExtremeEventForecaster
 
 
 class RadarSequenceDataset(Dataset):
